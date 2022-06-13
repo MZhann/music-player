@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <link rel="preconnect" href = "https://fonts.gstatic.com">
+    <link href = "https://fonts.googleapis.com/css2?family=Roboto:wght@500;700&display=swap" rel = "stylesheet">
+    <link rel  = "stylesheet" href = "./style3.css">
+</head>
+<body>
+    <video class = "video" id="video-background" autoplay muted width = "100%" >
+        <source src = "./video/Up&Up.mp4"></source>
+    </video>
+    <div class = "background">
+        <div class="titl">
+            <h1 style = "color: white;">ZhanMusic</h1>
+        </div>
+    </div>
+    <div class="wrapper">
+        <div class="player">
+            <div class="title">Now Playing</div>
+            <div class="cover"><img class = "cover_img" src="./img/cover1.jpg" alt = "music's image"></div>
+            <div class="song">daf</div>
+            <audio class = "audio" src="./audio/Otyzdan_asyp_baramyn.mp3"></audio>
+            <div class="progress_container">
+                <div class="progress"></div>
+            </div>
+            <div class="buttons">
+                <div class="btn prev"><img src = "./prev.png" alt="btn"></div>
+                <div class="btn play"><img class = "img_src" src = "./play.png" alt="btn"></div>
+                <div class="btn next"><img src = "./next.png" alt="btn"></div>
+            </div>
+        </div>
+    </div>
+    
+
+    
+</body>
+
+<script>
+
+    
+    const player = document.querySelector('.player'),
+    playBtn = document.querySelector('.play'),
+    prevBtn = document.querySelector('.prev'),
+    nextBtn = document.querySelector('.next'),
+    audio = document.querySelector('.audio'),
+    video = document.querySelector('.video'),
+    progressContainer = document.querySelector('.progress_container'),
+    progress = document.querySelector('.progress')
+    title = document.querySelector('.song'),
+    cover = document.querySelector('.cover_img'),
+    imgSrc = document.querySelector('.img_src')
+
+// названия песен
+const songs = ['Otyzdan_asyp_baramyn','Up&Up','Останемся Здесь']
+// песня по умолчанию
+let songIndex = 1
+
+//load
+
+function loadSong(song){
+  title.innerHTML = song;
+  audio.src = `audio/${song}.mp3`
+  video.src = `video/${song}.mp4`
+  cover.src = `img/cover${songIndex+1}.jpg`
+  
+}
+loadSong(songs[songIndex]);
+
+//PLay
+
+function playSong() {
+  player.classList.add('play')
+  imgSrc.src = './pause.png'
+  audio.play()
+}
+
+//Pause
+function pauseSong(){
+  player.classList.remove('play')
+  imgSrc.src = './play.png'
+  audio.pause()
+}
+
+playBtn.addEventListener('click', ()=>{
+  const isPLaying = player.classList.contains('play')
+  if(isPLaying){
+      pauseSong()
+  }else{
+      playSong()
+  }
+})
+
+
+
+//nextSong
+function nextSong(){
+    songIndex++;
+    if(songIndex > songs.length-1){
+        songIndex = 0;
+    }
+    loadSong(songs[songIndex])
+    playSong()
+}
+
+nextBtn.addEventListener('click', nextSong)
+
+
+//prevSong
+function prevSong(){
+    songIndex--;
+    if(songIndex < 0){
+        songIndex = songs.length-1;
+    }
+    loadSong(songs[songIndex])
+    playSong()
+}
+prevBtn.addEventListener('click', prevSong)
+
+
+//progressBar
+
+function updateProgress(e){
+
+    const {duration, currentTime} = e.srcElement
+    const progressPercent = (currentTime / duration) * 100
+    progress.style.width = `${progressPercent}%`
+}
+
+audio.addEventListener('timeupdate', updateProgress)
+
+
+
+//Set progress
+function setProgress(e){
+    const width = this.clientWidth
+    const clickX = e.offsetX
+    const duration = audio.duration
+
+    audio.currentTime = (clickX/width)*duration
+}
+progressContainer.addEventListener('click', setProgress)
+
+//autoplay
+audio.addEventListener('ended', nextSong)
+
+
+
+
+
+
+</script>
+<!-- <script src="java.js"></script> -->
+
+
+
+
+
+
+
+
+</html>
+
+
+
+
+
+
+
